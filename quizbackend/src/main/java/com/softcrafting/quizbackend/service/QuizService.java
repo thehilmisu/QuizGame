@@ -96,11 +96,18 @@ public class QuizService {
             List<Question> questions = quiz.getQuestions();
             int score = 0;
 
-            for (int i = 0; i < responses.size(); i++) {
-                if (i < questions.size() && responses.get(i).getResponse().equals(questions.get(i).getCorrectanswer())) {
+            for (Question question : questions) {
+
+                UserResponse matchingResponse = responses.stream()
+                        .filter(response -> response.getId().equals(question.getId()))
+                        .findFirst()
+                        .orElse(null);
+
+                if (matchingResponse != null && matchingResponse.getResponse().equals(question.getCorrectanswer())) {
                     score++;
                 }
             }
+
             return new ResponseEntity<>(score, HttpStatus.OK);
 
         } catch (Exception e) {
@@ -108,5 +115,6 @@ public class QuizService {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
+
 
 }
