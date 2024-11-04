@@ -3,13 +3,17 @@ package com.softcrafting.quizbackend.service;
 import com.softcrafting.quizbackend.dao.QuestionDao;
 import com.softcrafting.quizbackend.dao.QuizDao;
 import com.softcrafting.quizbackend.model.Question;
+import com.softcrafting.quizbackend.model.QuestionWrapper;
 import com.softcrafting.quizbackend.model.Quiz;
+import com.softcrafting.quizbackend.model.Response;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class QuizService {
@@ -19,7 +23,6 @@ public class QuizService {
 
     @Autowired
     QuestionDao questionDao;
-
 
     public ResponseEntity<String> createQuiz(String category, int numQ, String title) {
 
@@ -31,6 +34,39 @@ public class QuizService {
 
         quizDao.save(quiz);
 
+        //TODO: handle the exception
         return new ResponseEntity<>("SUCCESS", HttpStatus.CREATED);
+    }
+
+    public ResponseEntity<List<QuestionWrapper>> getQuizQuestions(Integer id) {
+        Optional<Quiz> quiz = quizDao.findById(id);
+
+        List<Question> questionsFromDB = quiz.get().getQuestions();
+        List<QuestionWrapper> questionsForUser = new ArrayList<>();
+
+        for(Question q : questionsFromDB){
+            QuestionWrapper qw = new QuestionWrapper(q.getId(), q.getOption1(), q.getOption2(), q.getOption3(), q.getOption4(), q.getQuestiontitle());
+            questionsForUser.add(qw);
+        }
+
+        //TODO: handle the exception
+        return new ResponseEntity<>(questionsForUser, HttpStatus.OK);
+    }
+
+    public ResponseEntity<Integer> calculateResult(Integer id, List<Response> responses) {
+        Quiz quiz = quizDao.findById(id).get();
+        List<Question> questions = quiz.getQuestions();
+        int correct = 0;
+        int i = 0;
+        for(Response response : responses){
+            if(response.getResponse().equals(questions.get(i).getCorrectanswer()))
+                correct++;
+
+            i++;
+        }
+
+        //TODO: handle exceptions
+        return new ResponseEntity<>(correct, HttpStatus.OK);
+
     }
 }
