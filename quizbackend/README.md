@@ -15,6 +15,10 @@ docker pull postgres
 ```
 docker run --name sqltutorial -e POSTGRES_PASSWORD=password -p 5432:5432 -d postgres
 ```
+## you can see the ip address of postgres to configure it in pgadmin
+```
+docker inspect -f '{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' sqltutorial
+```
 
 
 ## Creating the `question` Table
@@ -35,12 +39,6 @@ explanation TEXT,
 tags VARCHAR(255)
 );
 ```
-
-
-### Explanation:
-- The `sql` after the opening triple backticks specifies that the code block is SQL, which allows for syntax highlighting in some Markdown renderers (e.g., GitHub, Visual Studio Code).
-- Ensure that the code block ends with another set of triple backticks.
-
 
 ```sql
 INSERT INTO question (category, difficultylevel, option1, option2, option3, option4, questiontitle, correctanswer, explanation, tags)

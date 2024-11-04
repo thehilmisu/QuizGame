@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class QuestionService {
@@ -40,5 +41,41 @@ public class QuestionService {
         return new ResponseEntity<>("SUCCESS", HttpStatus.CREATED);
     }
 
-    //TODO: add update, delete methods
+    public ResponseEntity<String> deleteQuestion(Integer id) {
+        questionDao.deleteById(id);
+        //TODO: handle the exception here
+        return new ResponseEntity<>("SUCCESS", HttpStatus.OK);
+    }
+
+    public ResponseEntity<String> updateQuestion(Integer id, Question question) {
+        try {
+            Optional<Question> existingQuestionOpt = questionDao.findById(id);
+
+            if (existingQuestionOpt.isPresent()) {
+                Question existingQuestion = existingQuestionOpt.get();
+
+                existingQuestion.setCategory(question.getCategory());
+                existingQuestion.setDifficultylevel(question.getDifficultylevel());
+                existingQuestion.setOption1(question.getOption1());
+                existingQuestion.setOption2(question.getOption2());
+                existingQuestion.setOption3(question.getOption3());
+                existingQuestion.setOption4(question.getOption4());
+                existingQuestion.setQuestiontitle(question.getQuestiontitle());
+                existingQuestion.setCorrectanswer(question.getCorrectanswer());
+                existingQuestion.setExplanation(question.getExplanation());
+                existingQuestion.setTags(question.getTags());
+
+                questionDao.save(existingQuestion);
+
+                return new ResponseEntity<>("Question updated successfully", HttpStatus.OK);
+            } else {
+                return new ResponseEntity<>("Question not found", HttpStatus.NOT_FOUND);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new ResponseEntity<>("An error occurred while updating the question", HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+
 }

@@ -3,7 +3,6 @@ package com.softcrafting.quizbackend.controller;
 import com.softcrafting.quizbackend.model.Question;
 import com.softcrafting.quizbackend.service.QuestionService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -29,5 +28,15 @@ public class QuestionController {
     @PostMapping("add")
     public ResponseEntity<String> addQuestion(@RequestBody Question question){
         return questionService.addQuestion(question);
+    }
+
+    @DeleteMapping("delete/{id}")
+    public ResponseEntity<String> deleteQuestion(@PathVariable Integer id){
+        return questionService.deleteQuestion(id);
+    }
+
+    @PutMapping("update/{id}")
+    public ResponseEntity<String> updateQuestion(@PathVariable Integer id, @RequestBody Question question){
+        return questionService.updateQuestion(id, question);
     }
 }

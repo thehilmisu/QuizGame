@@ -1,7 +1,7 @@
 package com.softcrafting.quizbackend.controller;
 
 import com.softcrafting.quizbackend.model.QuestionWrapper;
-import com.softcrafting.quizbackend.model.Response;
+import com.softcrafting.quizbackend.model.UserResponse;
 import com.softcrafting.quizbackend.service.QuizService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -28,7 +28,7 @@ public class QuizController {
     }
 
     @PostMapping("submit/{id}")
-    public ResponseEntity<Integer> submitQuiz(@PathVariable Integer id, @RequestBody List<Response> responses){
-        return quizService.calculateResult(id, responses);
+    public ResponseEntity<Integer> submitQuiz(@PathVariable Integer id, @RequestBody List<UserResponse> response){
+        return quizService.calculateResult(id, response);
     }
 }
